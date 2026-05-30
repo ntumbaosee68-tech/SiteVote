@@ -1,10 +1,20 @@
+import os
 import sqlite3
 from pathlib import Path
 from flask import g
 
 BASE_DIR = Path(__file__).resolve().parent
-DATABASE = BASE_DIR / "vote.db"
-UPLOAD_FOLDER = BASE_DIR / "uploads"
+
+# Support persistent disk on Render or use local directory
+PERSISTENT_DIR = os.environ.get("PERSISTENT_DIR")
+if PERSISTENT_DIR:
+    persistent_path = Path(PERSISTENT_DIR).resolve()
+    DATABASE = persistent_path / "vote.db"
+    UPLOAD_FOLDER = persistent_path / "uploads"
+else:
+    DATABASE = BASE_DIR / "vote.db"
+    UPLOAD_FOLDER = BASE_DIR / "uploads"
+
 SCHEMA_FILE = BASE_DIR / "schema.sql"
 
 

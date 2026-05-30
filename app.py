@@ -31,6 +31,9 @@ app = Flask(__name__, static_folder="assets", static_url_path="/assets")
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "change-me-for-production")
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
+# Initialisation automatique de la base de données (Gunicorn et local)
+init_db()
+
 # Setup error logging
 LOG_DIR = BASE_DIR / "logs"
 LOG_DIR.mkdir(parents=True, exist_ok=True)
@@ -456,5 +459,4 @@ def error_log():
 
 
 if __name__ == "__main__":
-    init_db()
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=False)
