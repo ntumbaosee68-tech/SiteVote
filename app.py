@@ -487,6 +487,11 @@ def serve_images(filename):
 
 @app.errorhandler(Exception)
 def handle_exception(e):
+    from werkzeug.exceptions import HTTPException
+    # Ne pas intercepter les exceptions HTTP standards (comme 404) pour que Flask les gère normalement
+    if isinstance(e, HTTPException):
+        return e
+
     # write full traceback to logs/error.txt for inspection
     tb = traceback.format_exc()
     log_path = BASE_DIR / "logs" / "error.txt"
