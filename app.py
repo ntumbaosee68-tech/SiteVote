@@ -449,6 +449,42 @@ def uploaded_file(filename):
     return "Fichier introuvable", 404
 
 
+@app.route("/css/<path:filename>")
+def serve_css(filename):
+    # Chercher d'abord dans assets/css/
+    local_path = BASE_DIR / "assets" / "css" / filename
+    if local_path.exists():
+        return send_from_directory(BASE_DIR / "assets" / "css", filename)
+    # Système de secours : chercher à la racine
+    if (BASE_DIR / filename).exists():
+        return send_from_directory(BASE_DIR, filename)
+    return "Style introuvable", 404
+
+
+@app.route("/js/<path:filename>")
+def serve_js(filename):
+    # Chercher d'abord dans assets/js/
+    local_path = BASE_DIR / "assets" / "js" / filename
+    if local_path.exists():
+        return send_from_directory(BASE_DIR / "assets" / "js", filename)
+    # Système de secours : chercher à la racine
+    if (BASE_DIR / filename).exists():
+        return send_from_directory(BASE_DIR, filename)
+    return "Script introuvable", 404
+
+
+@app.route("/images/<path:filename>")
+def serve_images(filename):
+    # Chercher d'abord dans assets/images/
+    local_path = BASE_DIR / "assets" / "images" / filename
+    if local_path.exists():
+        return send_from_directory(BASE_DIR / "assets" / "images", filename)
+    # Système de secours : chercher à la racine
+    if (BASE_DIR / filename).exists():
+        return send_from_directory(BASE_DIR, filename)
+    return "Image introuvable", 404
+
+
 @app.errorhandler(Exception)
 def handle_exception(e):
     # write full traceback to logs/error.txt for inspection
