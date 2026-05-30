@@ -5,16 +5,24 @@ from flask import g
 
 BASE_DIR = Path(__file__).resolve().parent
 
-# Support persistent disk on Render or use local directory
-PERSISTENT_DIR = os.environ.get("PERSISTENT_DIR")
-if PERSISTENT_DIR:
-    persistent_path = Path(PERSISTENT_DIR).resolve()
-    DATABASE = persistent_path / "vote.db"
-    UPLOAD_FOLDER = persistent_path / "uploads"
-else:
-    DATABASE = BASE_DIR / "vote.db"
-    UPLOAD_FOLDER = BASE_DIR / "uploads"
+# Support robust storage path fallback
+def get_storage_paths():
+    persistent_dir = os.environ.get("PERSISTENT_DIR")
+    if persistent_dir:
+        try:
+            path = Path(persistent_dir).resolve()
+            # test directory creation/write permissions
+            path.mkdir(parents=True, exist_ok=True)
+            # test creating a dummy file to ensure write permission
+            test_file = path / ".write_test"
+            test_file.touch()
+            test_file.unlink()
+            return path / "vote.db", path / "uploads"
+        except Exception as e:
+            print(f"Warning: Persistent directory '{persistent_dir}' not writable: {e}. Falling back to local directory.", flush=True)
+    return BASE_DIR / "vote.db", BASE_DIR / "uploads"
 
+DATABASE, UPLOAD_FOLDER = get_storage_paths()
 SCHEMA_FILE = BASE_DIR / "schema.sql"
 
 
