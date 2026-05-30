@@ -13,7 +13,10 @@ from flask import (
     flash,
     send_from_directory,
     g,
+    Response,
 )
+import logging
+import traceback
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from db import get_db, close_db, init_db, UPLOAD_FOLDER
@@ -27,6 +30,15 @@ ADMIN_CODE = os.environ.get("ADMIN_CODE", "ADMIN123")
 app = Flask(__name__, static_folder="assets", static_url_path="/assets")
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "change-me-for-production")
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+
+# Setup error logging
+LOG_DIR = BASE_DIR / "logs"
+LOG_DIR.mkdir(parents=True, exist_ok=True)
+logging.basicConfig(
+    filename=str(LOG_DIR / "error.log"),
+    level=logging.ERROR,
+    format="%(asctime)s %(levelname)s: %(message)s",
+)
 
 
 def query_db(query, args=(), one=False):
@@ -412,6 +424,28 @@ def proces_verbal():
 @app.route("/uploads/<path:filename>")
 def uploaded_file(filename):
     return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
+
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    # write full traceback to logs/error.txt for inspection
+    tb = traceback.format_exc()
+    log_path = BASE_DIR / "logs" / "error.txt"
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    log_path.write_text(tb, encoding="utf-8")
+    logging.error(tb)
+    return (
+        "Internal Server Error: an error occurred. Check /error-log for details.",
+        500,
+    )
+
+
+@app.route("/error-log")
+def error_log():
+    p = BASE_DIR / "logs" / "error.txt"
+    if p.exists():
+        return Response(p.read_text(encoding="utf-8"), mimetype="text/plain")
+    return Response("No error log found.", mimetype="text/plain", status=404)
 
 
 if __name__ == "__main__":
