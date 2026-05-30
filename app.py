@@ -27,7 +27,20 @@ UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
 ADMIN_CODE = os.environ.get("ADMIN_CODE", "ADMIN123")
 
-app = Flask(__name__, static_folder="assets", static_url_path="/assets")
+# Détecter dynamiquement si les dossiers de templates et de ressources existent (pour supporter la structure plate sur GitHub)
+if (BASE_DIR / "templates").is_dir():
+    template_dir = "templates"
+else:
+    template_dir = "."
+
+if (BASE_DIR / "assets").is_dir():
+    static_dir = "assets"
+    static_url = "/assets"
+else:
+    static_dir = "."
+    static_url = ""
+
+app = Flask(__name__, template_folder=template_dir, static_folder=static_dir, static_url_path=static_url)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "change-me-for-production")
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
@@ -426,7 +439,14 @@ def proces_verbal():
 
 @app.route("/uploads/<path:filename>")
 def uploaded_file(filename):
-    return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
+    # Chercher d'abord dans le dossier d'uploads configuré
+    target_path = Path(app.config["UPLOAD_FOLDER"]) / filename
+    if target_path.exists():
+        return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
+    # Système de secours : chercher à la racine si le dépôt GitHub est plat
+    if (BASE_DIR / filename).exists():
+        return send_from_directory(BASE_DIR, filename)
+    return "Fichier introuvable", 404
 
 
 @app.errorhandler(Exception)
