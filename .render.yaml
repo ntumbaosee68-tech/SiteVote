@@ -1,12 +1,11 @@
 services:
   - type: web
     name: vote-platform-python
-    env: python
-    plan: free
-    region: oregon
-    branch: main
+    runtime: python-3.11
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
     envVars:
       - key: FLASK_ENV
         value: production
+      - key: FLASK_SECRET_KEY
+        value: change-me-in-production
