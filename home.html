@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="auth-container">
+    <div class="auth-header">
+        <h2>Plateforme de Vote Étudiant</h2>
+        <p>Université Protestante de Lubumbashi</p>
+    </div>
+
+    <div class="auth-body">
+        <p>Bienvenue sur l'application de gestion des élections étudiantes. Connectez-vous ou inscrivez-vous pour participer.</p>
+        <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
+            <a class="btn" href="{{ url_for('login') }}">Connexion</a>
+            <a class="btn" href="{{ url_for('register') }}">Inscription</a>
+            <a class="btn" href="{{ url_for('results') }}">Résultats</a>
+            <a class="btn" href="{{ url_for('historique_results') }}">Historique</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

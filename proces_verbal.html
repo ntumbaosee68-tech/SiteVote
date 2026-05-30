@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="pv-container">
+    <div class="pv-header">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" class="pv-logo" alt="Logo">
+        <div class="pv-title">Université Protestante de Lubumbashi</div>
+        <div>Procès-Verbal officiel des élections</div>
+    </div>
+    <hr>
+    <div class="pv-card">
+        <strong>Élection :</strong> {{ election.titre }}<br>
+        <strong>Statut :</strong> 🟢 Active<br>
+        <strong>Date :</strong> {{ now.strftime('%d/%m/%Y') }}<br>
+        <strong>Heure :</strong> {{ now.strftime('%H:%M') }}
+    </div>
+    <div class="print-btn">
+        <button class="btn" onclick="window.print()">🖨️ Imprimer</button>
+    </div>
+    <h3>Résultats des candidats</h3>
+    {% if candidats|length == 0 %}
+        <div class="pv-card">Aucun candidat enregistré</div>
+    {% else %}
+        {% set max_votes = candidats[0].total if candidats else 0 %}
+        {% for candidat in candidats %}
+            <div class="pv-card result {% if candidat.total == max_votes and max_votes > 0 %}winner{% endif %}">
+                <div class="candidate-info">
+                    {% if candidat.photo %}
+                        <img src="{{ url_for('uploaded_file', filename=candidat.photo) }}" alt="photo">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='images/default.png') }}" alt="photo">
+                    {% endif %}
+                    <br>
+                    <strong>{{ candidat.nom }}</strong><br>
+                    {{ candidat.promotion }}<br>
+                    {{ candidat.faculte }}
+                </div>
+                <div>
+                    {% if candidat.total == 0 %}
+                        <span class="zero">0 voix</span>
+                    {% else %}
+                        <strong>{{ candidat.total }} voix</strong>
+                    {% endif %}
+                    {% if candidat.total == max_votes and max_votes > 0 %}
+                        <br><span style="color:green;font-weight:bold;">🏆 Gagnant</span>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <div class="pv-card"><strong>Total des votes :</strong> {{ total_votes }}</div>
+    <div class="footer">
+        Fait à Lubumbashi, le {{ now.strftime('%d/%m/%Y %H:%M') }}<br><br>
+        <strong>Système de vote étudiant</strong><br>
+        Conçu par : Osée Ntumba et Kashindi Nathanael
+    </div>
+    <a class="btn" href="{{ url_for('admin_dashboard') }}">Retour</a>
+</div>
+{% endblock %}

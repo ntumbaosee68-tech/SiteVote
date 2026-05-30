@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="auth-container">
+    <div class="auth-header">
+        <h2>Inscription Étudiant</h2>
+        <p>Université Protestante de Lubumbashi</p>
+    </div>
+
+    <div class="auth-body">
+        <form method="POST">
+            <input type="text" name="nom" placeholder="Nom complet" required>
+            <input type="text" name="matricule" placeholder="Matricule" required>
+            <input type="password" name="password" placeholder="Mot de passe" required>
+            <button class="btn" type="submit">S'inscrire</button>
+        </form>
+        <div class="auth-footer">
+            <p>Vous avez déjà un compte ?</p>
+            <a class="btn" href="{{ url_for('login') }}">Se connecter</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

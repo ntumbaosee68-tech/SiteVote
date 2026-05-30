@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="auth-container">
+    <div class="auth-header">
+        <h2>Résultats officiels</h2>
+        <p>Université Protestante de Lubumbashi</p>
+    </div>
+
+    <div class="auth-body">
+        {% if not election %}
+            <div class="dash-card">
+                <h3 style="text-align:center;">Aucune élection ouverte actuellement</h3>
+            </div>
+        {% else %}
+            <h3 style="text-align:center;">{{ election.titre }}</h3>
+            {% if data|length == 0 %}
+                <div class="dash-card">Aucun résultat disponible actuellement</div>
+            {% else %}
+                {% set max_votes = data[0].total if data else 0 %}
+                {% for row in data %}
+                    <div class="dash-card candidate {% if row.total == max_votes and max_votes > 0 %}winner{% endif %}">
+                        {% if row.photo %}
+                            <img src="{{ url_for('uploaded_file', filename=row.photo) }}" alt="photo">
+                        {% else %}
+                            <img src="{{ url_for('static', filename='images/default.png') }}" alt="photo">
+                        {% endif %}
+                        <strong>{{ row.nom }}</strong><br><br>
+                        <strong>Promotion :</strong> {{ row.promotion }}<br>
+                        <strong>Faculté :</strong> {{ row.faculte }}<br><br>
+                        <h3>{{ row.total }} vote(s)</h3>
+                        {% if row.total == max_votes and max_votes > 0 %}
+                            <p style="color:green;font-weight:bold;font-size:18px;">🏆 Gagnant</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                {% if data|length > 0 %}
+                    <div class="chart-box">
+                        <h3 style="text-align:center;">Analyse graphique des votes</h3>
+                        <canvas id="voteChart"></canvas>
+                    </div>
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                    <script>
+                        const labels = {{ labels | tojson | safe }};
+                        const votes = {{ votes | tojson | safe }};
+                        new Chart(document.getElementById('voteChart'), {
+                            type: 'bar',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Nombre de votes',
+                                    data: votes,
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                scales: {
+                                    y: { beginAtZero: true }
+                                }
+                            }
+                        });
+                    </script>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

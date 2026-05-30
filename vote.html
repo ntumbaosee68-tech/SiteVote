@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="auth-container">
+    <div class="auth-header">
+        <h2>Vote étudiant</h2>
+        <p>{{ election.titre }}</p>
+    </div>
+
+    <div class="auth-body">
+        <form method="POST">
+            {% for candidat in candidats %}
+                <div class="dash-card candidate-card">
+                    <label>
+                        {% if candidat.photo %}
+                            <img src="{{ url_for('uploaded_file', filename=candidat.photo) }}" alt="photo">
+                        {% else %}
+                            <img src="{{ url_for('static', filename='images/default.png') }}" alt="photo">
+                        {% endif %}
+                        <h3>{{ candidat.nom }}</h3>
+                        <p>{{ candidat.promotion }}</p>
+                        <p>{{ candidat.faculte }}</p>
+                        <input type="radio" name="candidat" value="{{ candidat.id }}"> Choisir
+                    </label>
+                </div>
+            {% endfor %}
+            <button class="btn" type="submit" onclick="return confirmerVote()">Valider le vote</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

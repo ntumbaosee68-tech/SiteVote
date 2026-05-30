@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="auth-container">
+    <div class="auth-header">
+        <h2>Ajouter un candidat</h2>
+        <p>Université Protestante de Lubumbashi</p>
+    </div>
+
+    <div class="auth-body">
+        <form method="POST" enctype="multipart/form-data">
+            <input type="text" name="nom" placeholder="Nom du candidat" required>
+            <input type="text" name="promotion" placeholder="Promotion (ex: L3 Informatique)" required>
+            <input type="text" name="faculte" placeholder="Faculté" required>
+            <input type="file" name="photo" required>
+            <select name="election" required>
+                <option value="">Sélectionnez une élection</option>
+                {% for election in elections %}
+                    <option value="{{ election.id }}">{{ election.titre }}</option>
+                {% endfor %}
+            </select>
+            <button class="btn" type="submit">Ajouter</button>
+        </form>
+        <a class="btn" href="{{ url_for('admin_dashboard') }}">Retour</a>
+    </div>
+</div>
+{% endblock %}

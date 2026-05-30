@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="topbar">Administration - Université Protestante de Lubumbashi</div>
+
+<div class="dashboard">
+    <h2 style="margin-bottom:20px;">Espace Administrateur</h2>
+    <div class="stats-grid">
+        <div class="stat-card"><h3>Étudiants</h3><h1>{{ stats.etudiants }}</h1></div>
+        <div class="stat-card"><h3>Votes</h3><h1>{{ stats.votes }}</h1></div>
+        <div class="stat-card"><h3>Candidats</h3><h1>{{ stats.candidats }}</h1></div>
+        <div class="stat-card"><h3>Élections</h3><h1>{{ stats.elections }}</h1></div>
+        <div class="stat-card"><h3>Participation</h3><h1>{{ stats.taux }}%</h1></div>
+    </div>
+    <div class="grid">
+        <div class="dash-card"><h3>Créer une élection</h3><p>Lancer une nouvelle élection</p><a class="btn" href="{{ url_for('create_election') }}">Accéder</a></div>
+        <div class="dash-card"><h3>Ajouter candidats</h3><p>Ajouter des participants</p><a class="btn" href="{{ url_for('add_candidate') }}">Accéder</a></div>
+        <div class="dash-card"><h3>Clôturer élection</h3><p>Fermer le vote</p><a class="btn" href="{{ url_for('close_election') }}">Clôturer</a></div>
+        <div class="dash-card"><h3>Résultats</h3><p>Consulter les résultats officiels</p><a class="btn" href="{{ url_for('results') }}">Voir résultats</a></div>
+    </div>
+    <div style="margin-top:20px;"><a class="btn" href="{{ url_for('logout') }}">Déconnexion</a></div>
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h2>Clôturer une élection</h2>
+    <form method="POST">
+        <select name="election" required>
+            <option value="">Sélectionnez une élection</option>
+            {% for election in elections %}
+                <option value="{{ election.id }}">{{ election.titre }}</option>
+            {% endfor %}
+        </select>
+        <button class="btn" type="submit">Clôturer</button>
+    </form>
+    <a class="btn" href="{{ url_for('admin_dashboard') }}">Retour</a>
+</div>
+{% endblock %}

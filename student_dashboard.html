@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="topbar">
+    Bienvenue {{ nom }} | Université Protestante de Lubumbashi
+</div>
+
+<div class="dashboard">
+    <h2>Espace Étudiant</h2>
+    <p style="text-align:center;color:#555;margin-bottom:25px;">Consultez les élections ouvertes et participez au vote étudiant.</p>
+    <div class="grid">
+        <div class="dash-card">
+            <h3>Élections disponibles</h3>
+            <p>Participer aux élections étudiantes</p>
+            {% if elections %}
+                {% for election in elections %}
+                    <div class="election-box">
+                        <h4>{{ election.titre }}</h4>
+                        <p class="status-open">🟢 Vote ouvert</p>
+                        {% if election.voted %}
+                            <p style="color:green;font-weight:bold;">✔ Vote déjà effectué</p>
+                        {% else %}
+                            <a class="btn" href="{{ url_for('student_vote', election_id=election.id) }}">Voter maintenant</a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="election-box">
+                    <p class="status-close">🔴 Aucune élection ouverte actuellement</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="dash-card">
+            <h3>Résultats officiels</h3>
+            <p>Consulter les résultats des élections</p>
+            <a class="btn" href="{{ url_for('results') }}">Voir résultats</a>
+        </div>
+
+        <div class="dash-card">
+            <h3>Procès-verbal</h3>
+            <p>Consulter le procès-verbal officiel</p>
+            <a class="btn" href="{{ url_for('proces_verbal') }}">Voir PV</a>
+        </div>
+
+        <div class="dash-card">
+            <h3>Déconnexion</h3>
+            <p>Quitter votre espace étudiant</p>
+            <a class="btn" href="{{ url_for('logout') }}">Se déconnecter</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

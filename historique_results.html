@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="dashboard">
+    <h2 style="text-align:center;">Historique des résultats</h2>
+    {% if results|length == 0 %}
+        <div class="history-box">Aucun historique disponible</div>
+    {% else %}
+        {% for item in results %}
+            <div class="history-box">
+                <h3>{{ item.election.titre }}</h3>
+                <p>Élection clôturée</p>
+                {% set max_votes = item.candidats[0].total if item.candidats else 0 %}
+                {% for row in item.candidats %}
+                    <div class="candidate {% if row.total == max_votes and max_votes > 0 %}winner{% endif %}">
+                        <strong>{{ row.nom }}</strong><br>
+                        {{ row.promotion }}<br>
+                        {{ row.faculte }}<br><br>
+                        <strong>{{ row.total }} voix</strong>
+                        {% if row.total == max_votes and max_votes > 0 %}
+                            <br><span style="color:green;font-weight:bold;">🏆 Gagnant</span>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}
