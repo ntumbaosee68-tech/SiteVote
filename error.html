@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="auth-container">
+    <div class="auth-header">
+        <h2>Erreur interne</h2>
+        <p>Une erreur est survenue. Le site ne peut pas s'afficher pour le moment.</p>
+    </div>
+    <div class="auth-body">
+        <p style="color:red; font-weight:bold;">{{ error_message }}</p>
+        <p>Un journal d'erreurs a été créé. Vous pouvez consulter <a href="{{ url_for('error_log') }}">/error-log</a> pour les détails techniques.</p>
+        <div style="margin-top:20px; padding:15px; background:#fff2f2; border:1px solid #f5c2c7; border-radius:10px; color:#8a1f24;">
+            <strong>Détails :</strong><br>
+            <pre style="white-space:pre-wrap; word-break:break-word;">{{ error_text }}</pre>
+        </div>
+    </div>
+</div>
+{% endblock %}

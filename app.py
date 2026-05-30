@@ -434,8 +434,15 @@ def handle_exception(e):
     log_path.parent.mkdir(parents=True, exist_ok=True)
     log_path.write_text(tb, encoding="utf-8")
     logging.error(tb)
+    message = str(e)
+    if not message:
+        message = "Une erreur inconnue est survenue."
     return (
-        "Internal Server Error: an error occurred. Check /error-log for details.",
+        render_template(
+            "error.html",
+            error_message=message,
+            error_text=tb,
+        ),
         500,
     )
 
